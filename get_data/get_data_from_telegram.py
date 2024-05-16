@@ -1,7 +1,6 @@
 import os
 from telethon.sync import TelegramClient
 from dotenv import find_dotenv, load_dotenv
-#from datetime import datetime, timedelta
 
 
 # Load environment variables from .env file
@@ -12,11 +11,13 @@ if ENV:
 # Your Telegram API credentials
 api_id = os.getenv('API_ID')
 api_hash = os.getenv('API_HASH')
-
-# Your phone number
 phone_number = os.getenv('PHONE_NUMBER')
+# Number of messages to retrieve
+limit = int(os.getenv('LIMIT_MESSAGES'))
+# Chat (group) name you want to retrieve messages from
+group_name = os.getenv('GROUP_NAME')
 
-# Path to your session file
+# Path to session file
 session_file = 'session/session_name.session'
 
 # Initialize the Telegram client
@@ -34,19 +35,10 @@ async def save_messages_to_file(messages, filename):
 async def main():
     # Connect to Telegram
     await client.start(phone_number)
-
-    # Number of messages to retrieve
-    limit = int(os.getenv('LIMIT_MESSAGES'))
-
-    # Chat (group) name you want to retrieve messages from
-    group_name = os.getenv('GROUP_NAME')
-
     # Get the entity corresponding to the group name
     group_entity = await client.get_entity(group_name)
-
     # Get the last messages from the group
     group_messages = await get_last_messages(group_entity, limit)
-
     # Save group messages to a text file
     group_filename = 'group_messages.txt'
     await save_messages_to_file(group_messages, group_filename)
