@@ -30,7 +30,7 @@ async def get_last_messages(entity, limit=10):
 async def save_messages_to_file(messages, filename):
     with open(filename, 'w', encoding='utf-8') as file:
         for message in messages:
-            file.write(f"{message.sender_id}: {message.text}\n")
+            file.write(f"{message.sender_id}: {message.text}\n{message.date}\n")
 
 async def main():
     # Connect to Telegram
