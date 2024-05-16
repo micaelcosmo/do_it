@@ -35,22 +35,8 @@ async def main():
     # Connect to Telegram
     await client.start(phone_number)
 
-    # Phone number or username of the chat you want to retrieve messages from
-    target_phone_number = os.getenv('TARGET_PHONE_NUMBER')
-    
-    # Get the entity corresponding to the phone number
-    user_entity = await client.get_entity(target_phone_number)
-    
     # Number of messages to retrieve
-    limit = 10
-
-    # Get the last messages from the phone number
-    user_messages = await get_last_messages(user_entity, limit)
-
-    # Save user messages to a text file
-    user_filename = 'user_messages.txt'
-    await save_messages_to_file(user_messages, user_filename)
-    print(f"Last {limit} messages received from {target_phone_number} saved to {user_filename}")
+    limit = int(os.getenv('LIMIT_MESSAGES'))
 
     # Chat (group) name you want to retrieve messages from
     group_name = os.getenv('GROUP_NAME')
