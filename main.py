@@ -42,7 +42,7 @@ class Main:
                 new_data = file_analyzer.find_pattern()
                 if new_data != None:
                     logging.info("Data saved successfully.")
-                    file_analyzer.save_to_json(data=new_data, filename='rescource/data.json')
+                    file_analyzer.save_to_json(data=new_data, file_path='rescource/data.json')
             sleep(5)
 
 
