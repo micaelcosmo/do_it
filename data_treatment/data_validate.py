@@ -24,19 +24,20 @@ class JSONReader:
             with open(self.file_path, 'r', encoding='utf-8') as file:
                 data = json.load(file)
                 self.data = data
-                return self.data
+                return True
         except FileNotFoundError:
             logging.error(f"File '{self.file_path}' not found.")
-            return None
+            return False
         except json.JSONDecodeError:
             logging.error(f"Error decoding JSON file '{self.file_path}'.")
-            return None
+            return False
 
-    def get_date_from_data(self) -> None:
+    def get_date_from_data(self, data : dict = {}) -> None:
         """
         Retrieves the last date from the data dictionary.
         """
         self.last_date = self.data.get('data_hora')
+        self.current_date = data.get('data_hora')
     
     def different_dates(self, date: str = '2024-05-21 01:04:26') -> bool:
         """
@@ -62,7 +63,7 @@ class JSONReader:
     
 
 if __name__ == '__main__':
-    reader = JSONReader('data.json')
+    reader = JSONReader('rescource/data.json')
     data = reader.read_json()
     reader.get_date_from_data()
     different_dates = reader.different_dates('2024-05-21 02:04:21')
