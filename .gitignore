@@ -161,3 +161,5 @@ cython_debug/
 
 # PRIVATE KEYS
 /session/*.session
+group_messages.txt
+data.json
