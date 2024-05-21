@@ -44,5 +44,5 @@ async def main():
     await save_messages_to_file(group_messages, group_filename)
     print(f"Last {limit} messages received from {group_name} saved to {group_filename}")
 
-if __name__ == "__main__":
+def loop_main():
     client.loop.run_until_complete(main())
