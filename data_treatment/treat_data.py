@@ -29,6 +29,12 @@ class AnalisadorArquivo:
         
 
     def encontrar_padrao(self):
+        """
+        Find and extract patterns from the file.
+
+        Returns:
+            dict: A dictionary containing the extracted data.
+        """
         with open(self.nome_arquivo, 'r', encoding='utf-8') as arquivo:
             linhas = arquivo.readlines()
             padrao_inicio = fr"{target_phone_number}{pattern_start}"
@@ -66,8 +72,24 @@ class AnalisadorArquivo:
             else:
                 logging.info("Padrão não encontrado.")
                 return None
+    
+    @staticmethod
+    def save_to_json(data, file_path):
+        """
+        Save data to a JSON file.
+
+        Args:
+            data (dict): The data to be saved.
+            file_path (str): The path to the JSON file.
+
+        Returns:
+            None
+        """
+        with open(file_path, 'w', encoding='utf-8') as file:
+            json.dump(data, file, indent=4, ensure_ascii=False)
 
 
 if __name__ == "__main__":
     analise = AnalisadorArquivo("group_messages.txt")
-    analise.encontrar_padrao()
+    data = analise.encontrar_padrao()
+    analise.save_to_json(data, "data.json")
