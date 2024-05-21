@@ -6,6 +6,7 @@ from time import sleep
 from data_treatment.treat_data import FileAnalyzer
 from data_treatment.data_validate import JSONReader
 from get_data import get_data_from_telegram as gd_telegram
+from data_treatment.logger import *
 
 
 ENV = load_dotenv()
@@ -17,10 +18,11 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 class Main:
     def __init__(self):
-        pass
+        self.is_new = False
 
     def run(self):
         while True:
+            sleep(5)
             # First, get the data from Telegram
             gd_telegram.loop_main()
             # Then, validate the data
@@ -35,16 +37,24 @@ class Main:
                     # Finally, treat and save the new data
                     logging.info("Dates are different. Updating date and saving data.")
                     file_analyzer.save_to_json(data=new_data, file_path='rescource/data.json')
+                    self.is_new = True
                 else:
                     logging.info("Nothing to do. Waiting for the next iteration.")
+                    self.is_new = False
             else:
                 # Finally, treat and save the new data
                 new_data = file_analyzer.find_pattern()
                 if new_data != None:
                     logging.info("Data saved successfully.")
                     file_analyzer.save_to_json(data=new_data, file_path='rescource/data.json')
-            sleep(5)
+                self.is_new = True
+            self.call_logger()
 
+    def call_logger(self):
+        # LoggerManager.o_metodo(nome_parametro=self.is_new)
+        # pega resultado self.isnew e usa como argumento para a função vinda da classe logger
+        pass
+        
 
 
 
