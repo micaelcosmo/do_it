@@ -2,6 +2,7 @@ import re
 import os
 import json
 import logging
+from time import sleep
 from dotenv import find_dotenv, load_dotenv
 
 
@@ -38,11 +39,16 @@ class FileAnalyzer:
         with open(self.file_path, 'r', encoding='utf-8') as arquivo:
             lines = arquivo.readlines()
             pattern_start_string = fr"{target_phone_number}{pattern_start}"
-            start_index = lines.index(pattern_start_string + "\n") + 1
+            try:
+                start_index = lines.index(pattern_start_string + "\n") + 1
+            except ValueError:
+                logging.error("Pattern start not found.")
+                logging.info("Unconfirmed entry. Wait for the next iteration.")
+                return None
             line_count = 13  # Defina a quantidade de lines que você deseja após o início do padrão
             treated_data = {}
             if start_index != -1:
-                logging.info("PADRÃO ENCONTRADO - INÍCIO")
+                logging.info("Pattern found - INÍCIO")
                 for linha in lines[start_index:start_index+line_count]:
                     if re.match(fr"{pattern_roleta}", linha):
                         treated_data['roleta'] = re.search(fr"{pattern_roleta}", linha).group(1)
@@ -66,11 +72,11 @@ class FileAnalyzer:
                     elif re.match(fr"{pattern_data_hora}", linha):
                         treated_data['data_hora'] = re.match(fr"{pattern_data_hora}", linha).group().format("YYYY-MM-DD HH:mm:ss")
                         logging.debug("Data e Hora: %s", re.match(fr"{pattern_data_hora}", linha).group())
-                logging.info(json.dumps(treated_data, indent=4, ensure_ascii=False))
-                logging.info("PADRÃO ENCONTRADO - FIM")
+                logging.debug(json.dumps(treated_data, indent=4, ensure_ascii=False))
+                logging.info("Pattern found - FIM")
                 return treated_data
             else:
-                logging.info("Padrão não encontrado.")
+                logging.info("Pattern not found.")
                 return None
     
     @staticmethod
@@ -92,4 +98,4 @@ class FileAnalyzer:
 if __name__ == "__main__":
     analise = FileAnalyzer("group_messages.txt")
     data = analise.find_pattern()
-    analise.save_to_json(data, "data.json")
+    analise.save_to_json(data, "rescource/data.json")
